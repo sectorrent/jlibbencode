@@ -1,5 +1,4 @@
-Bencode
-========
+# jlibbencode
 
 This is an implementation of Bencode for Java. Bencode is used for DHTs, Torrents, and Google DataServers. Its a lightweight fast data serialization.
 [Wikipedia](https://en.wikipedia.org/wiki/Bencode)
