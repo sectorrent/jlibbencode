@@ -1,11 +1,11 @@
-package org.octorrent.jlibbencode.variables;
+package org.sectorrent.jlibbencode.variables;
 
-import org.octorrent.jlibbencode.variables.inter.BencodeType;
-import org.octorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.inter.BencodeType;
+import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.util.*;
 
-import static org.octorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
+import static org.sectorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
 
 public class BencodeObject extends BencodeVariable {
 

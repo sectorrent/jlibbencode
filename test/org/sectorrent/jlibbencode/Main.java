@@ -1,7 +1,7 @@
-package org.octorrent.jlibbencode;
+package org.sectorrent.jlibbencode;
 
-import org.octorrent.jlibbencode.variables.BencodeArray;
-import org.octorrent.jlibbencode.variables.BencodeObject;
+import org.sectorrent.jlibbencode.variables.BencodeArray;
+import org.sectorrent.jlibbencode.variables.BencodeObject;
 
 import java.io.IOException;
 

@@ -3,11 +3,11 @@
 This is an implementation of Bencode for Java. Bencode is used for DHTs, Torrents, and Google DataServers. Its a lightweight fast data serialization.
 [Wikipedia](https://en.wikipedia.org/wiki/Bencode)
 
-I have also made an implementation of Bencode with [Rust](https://github.com/octorrent/rlibbencode).
+I have also made an implementation of Bencode with [Rust](https://github.com/sectorrent/rlibbencode).
 
 Library
 -----
-The JAR for the library can be found here: [Bencode JAR](https://github.com/octtorrent/jlibbencode)
+The JAR for the library can be found here: [Bencode JAR](https://github.com/secttorrent/jlibbencode)
 
 Usage
 -----

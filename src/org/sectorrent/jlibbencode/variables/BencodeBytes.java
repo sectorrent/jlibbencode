@@ -1,7 +1,7 @@
-package org.octorrent.jlibbencode.variables;
+package org.sectorrent.jlibbencode.variables;
 
-import org.octorrent.jlibbencode.variables.inter.BencodeType;
-import org.octorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.inter.BencodeType;
+import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

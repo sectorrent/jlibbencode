@@ -1,8 +1,8 @@
-package org.octorrent.jlibbencode.io;
+package org.sectorrent.jlibbencode.io;
 
-import org.octorrent.jlibbencode.variables.*;
-import org.octorrent.jlibbencode.variables.inter.BencodeType;
-import org.octorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.*;
+import org.sectorrent.jlibbencode.variables.inter.BencodeType;
+import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package org.octorrent.jlibbencode.variables.inter;
+package org.sectorrent.jlibbencode.variables.inter;
 
 public enum BencodeType {
 
