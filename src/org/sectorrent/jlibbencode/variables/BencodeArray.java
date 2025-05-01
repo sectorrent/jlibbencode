@@ -14,13 +14,10 @@ public class BencodeArray extends BencodeVariable {
     private List<BencodeVariable> l;
 
     public BencodeArray(){
-        type = BencodeType.ARRAY;
         l = new ArrayList<>();
     }
 
     public BencodeArray(List<?> l){
-        this();
-
         for(Object v : l){
             if(v instanceof BencodeVariable){
                 add((BencodeVariable) v);
@@ -226,6 +223,11 @@ public class BencodeArray extends BencodeVariable {
     }
 
     @Override
+    public BencodeType getType(){
+        return BencodeType.ARRAY;
+    }
+
+    @Override
     public Object getObject(){
         List<Object> a = new ArrayList<>();
         for(BencodeVariable v : l){
@@ -249,7 +251,7 @@ public class BencodeArray extends BencodeVariable {
     public byte[] encode(){
         byte[] buf = new byte[byteSize()];
 
-        buf[0] = (byte) type.getPrefix();
+        buf[0] = (byte) BencodeType.ARRAY.getPrefix();
         int pos = 1;
 
         for(BencodeVariable v : l){
@@ -258,20 +260,20 @@ public class BencodeArray extends BencodeVariable {
             pos += key.length;
         }
 
-        buf[pos] = (byte) type.getSuffix();
+        buf[pos] = (byte) BencodeType.ARRAY.getSuffix();
 
         return buf;
     }
 
     @Override
     public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(type)){
+        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.ARRAY)){
             throw new IllegalArgumentException("Byte array is not a bencode array.");
         }
 
         off++;
 
-        while(buf[off] != type.getSuffix()){
+        while(buf[off] != BencodeType.ARRAY.getSuffix()){
             BencodeVariable var = unpackBencode(buf, off);
             off += var.byteSize();
             l.add(var);

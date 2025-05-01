@@ -2,11 +2,7 @@ package org.sectorrent.jlibbencode.variables.inter;
 
 public abstract class BencodeVariable {
 
-    protected BencodeType type;
-
-    public BencodeType getType(){
-        return type;
-    }
+    public abstract BencodeType getType();
 
     public abstract Object getObject();
 

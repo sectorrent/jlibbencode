@@ -12,13 +12,10 @@ public class BencodeObject extends BencodeVariable {
     private Map<BencodeBytes, BencodeVariable> m;
 
     public BencodeObject(){
-        type = BencodeType.OBJECT;
         m = new HashMap<>();
     }
 
     public BencodeObject(Map<?, ?> m){
-        this();
-
         for(Object o : m.keySet()){
             BencodeBytes k;
 
@@ -205,6 +202,11 @@ public class BencodeObject extends BencodeVariable {
     }
 
     @Override
+    public BencodeType getType(){
+        return BencodeType.OBJECT;
+    }
+
+    @Override
     public Map<String, ?> getObject(){
         Map<String, Object> h = new HashMap<>();
         for(BencodeBytes k : m.keySet()){
@@ -228,7 +230,7 @@ public class BencodeObject extends BencodeVariable {
     public byte[] encode(){
         byte[] buf = new byte[byteSize()];
 
-        buf[0] = (byte) type.getPrefix();
+        buf[0] = (byte) BencodeType.OBJECT.getPrefix();
         int pos = 1;
 
         for(BencodeBytes k : m.keySet()){
@@ -241,20 +243,20 @@ public class BencodeObject extends BencodeVariable {
             pos += value.length;
         }
 
-        buf[pos] = (byte) type.getSuffix();
+        buf[pos] = (byte) BencodeType.OBJECT.getSuffix();
 
         return buf;
     }
 
     @Override
     public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(type)){
+        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.OBJECT)){
             throw new IllegalArgumentException("Byte array is not a bencode object.");
         }
 
         off++;
 
-        while(buf[off] != type.getSuffix()){
+        while(buf[off] != BencodeType.OBJECT.getSuffix()){
             BencodeBytes key = new BencodeBytes();
             key.decode(buf, off);
             off += key.byteSize();

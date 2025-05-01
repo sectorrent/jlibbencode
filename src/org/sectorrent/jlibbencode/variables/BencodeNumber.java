@@ -13,14 +13,17 @@ public class BencodeNumber extends BencodeVariable {
     private int s;
 
     public BencodeNumber(){
-        type = BencodeType.NUMBER;
     }
 
     public BencodeNumber(Number n){
-        this();
         this.n = n;
 
         s = 2+n.toString().getBytes().length;
+    }
+
+    @Override
+    public BencodeType getType(){
+        return BencodeType.NUMBER;
     }
 
     @Override
@@ -36,8 +39,8 @@ public class BencodeNumber extends BencodeVariable {
     @Override
     public byte[] encode(){
         byte[] b = new byte[s];
-        b[0] = (byte) type.getPrefix();
-        b[s-1] = (byte) type.getSuffix();
+        b[0] = (byte) BencodeType.NUMBER.getPrefix();
+        b[s-1] = (byte) BencodeType.NUMBER.getSuffix();
         byte[] c = n.toString().getBytes();
         System.arraycopy(c, 0, b, 1, c.length);
 
@@ -46,7 +49,7 @@ public class BencodeNumber extends BencodeVariable {
 
     @Override
     public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(type)){
+        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.NUMBER)){
             throw new IllegalArgumentException("Byte array is not a bencode number.");
         }
 
@@ -54,7 +57,7 @@ public class BencodeNumber extends BencodeVariable {
         off++;
         int s = off;
 
-        while(buf[off] != type.getSuffix()){
+        while(buf[off] != BencodeType.NUMBER.getSuffix()){
             c[off-s] = (char) buf[off];
             off++;
         }

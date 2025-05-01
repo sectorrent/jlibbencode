@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="jlibbencode:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/jlibbencode_jar</output-path>
+    <root id="archive" name="jlibbencode.jar">
+      <element id="module-output" name="jlibbencode" />
+    </root>
+  </artifact>
+</component>

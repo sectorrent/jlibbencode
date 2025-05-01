@@ -14,11 +14,9 @@ public class BencodeBytes extends BencodeVariable {
     private int s;
 
     public BencodeBytes(){
-        type = BencodeType.BYTES;
     }
 
     public BencodeBytes(byte[] b){
-        this();
         this.b = b;
 
         s = 1+b.length;
@@ -27,6 +25,11 @@ public class BencodeBytes extends BencodeVariable {
             t /= 10;
             s++;
         }
+    }
+
+    @Override
+    public BencodeType getType(){
+        return BencodeType.BYTES;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class BencodeBytes extends BencodeVariable {
             t /= 10;
         }
 
-        r[d] = (byte) type.getDelimiter();
+        r[d] = (byte) BencodeType.BYTES.getDelimiter();
         System.arraycopy(b, 0, r, d+1, b.length);
 
         return r;
@@ -63,14 +66,14 @@ public class BencodeBytes extends BencodeVariable {
 
     @Override
     public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(type)){
+        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.BYTES)){
             throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
         }
 
         byte[] c = new byte[8];
         int s = off;
 
-        while(buf[off] != type.getDelimiter()){
+        while(buf[off] != BencodeType.BYTES.getDelimiter()){
             c[off-s] = buf[off];
             off++;
         }
