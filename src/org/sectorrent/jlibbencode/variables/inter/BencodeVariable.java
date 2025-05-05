@@ -7,10 +7,10 @@ public abstract class BencodeVariable {
     public abstract Object getObject();
 
     public abstract byte[] toBencode();
-
+/*
     public void fromBencode(byte[] buf){
-        fromBencode(buf, 0);
+        fromBencode(buf);
     }
-
-    public abstract void fromBencode(byte[] buf, int off);
+*/
+    public abstract int fromBencode(byte[] buf);
 }

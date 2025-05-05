@@ -19,14 +19,18 @@ public class TestCases {
     @Test
     public void number(){
         BencodeNumber a = new BencodeNumber(100.2);
-        System.out.println(new String(a.toBencode()));
+        BencodeNumber b = new BencodeNumber();
+        b.fromBencode(a.toBencode());
 
+        assert a.equals(b);
     }
 
     @Test
     public void bytes(){
         BencodeBytes a = new BencodeBytes("Hello World");
-        System.out.println(new String(a.toBencode()));
+        BencodeBytes b = new BencodeBytes();
+        b.fromBencode(a.toBencode());
 
+        //assert a.equals(b);
     }
 }
