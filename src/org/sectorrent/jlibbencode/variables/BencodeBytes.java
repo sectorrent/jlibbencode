@@ -11,20 +11,16 @@ import java.util.Base64;
 public class BencodeBytes extends BencodeVariable {
 
     private byte[] b;
-    private int s;
 
     public BencodeBytes(){
     }
 
     public BencodeBytes(byte[] b){
         this.b = b;
+    }
 
-        s = 1+b.length;
-        int t = b.length;
-        while(t != 0){
-            t /= 10;
-            s++;
-        }
+    public BencodeBytes(String s){
+        this.b = s.getBytes();
     }
 
     @Override
@@ -38,19 +34,14 @@ public class BencodeBytes extends BencodeVariable {
     }
 
     @Override
-    public int byteSize(){
-        return s;
-    }
-
-    @Override
-    public byte[] encode(){
-        byte[] r = new byte[s];
-
+    public byte[] toBencode(){
         int t = b.length, d = 0;
         while(t != 0){
             t /= 10;
             d++;
         }
+
+        byte[] r = new byte[b.length+d+1];
 
         t = b.length;
         for(int i = d-1; i >= 0; i--){
@@ -65,7 +56,8 @@ public class BencodeBytes extends BencodeVariable {
     }
 
     @Override
-    public void decode(byte[] buf, int off){
+    public void fromBencode(byte[] buf, int off){
+        /*
         if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.BYTES)){
             throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
         }
@@ -86,19 +78,20 @@ public class BencodeBytes extends BencodeVariable {
         b = new byte[length];
         System.arraycopy(buf, off+1, b, 0, b.length);
         this.s = (off-s)+b.length+1;
+        */
     }
 
     @Override
     public boolean equals(Object o){
         if(o instanceof BencodeBytes){
-            return Arrays.equals(encode(), ((BencodeBytes) o).encode());
+            return Arrays.equals(b, ((BencodeBytes) o).b);
         }
         return false;
     }
 
     @Override
     public int hashCode(){
-        return 0;
+        return b.hashCode();
     }
 
     @Override

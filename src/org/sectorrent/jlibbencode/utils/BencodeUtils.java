@@ -34,7 +34,7 @@ public class BencodeUtils {
                 throw new IllegalArgumentException("Invalid key type.");
         }
 
-        variable.decode(buf, off);
+        variable.fromBencode(buf, off);
         return variable;
     }
 }

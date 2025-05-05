@@ -14,7 +14,7 @@ public class BencodeWriter {
     }
 
     public void write(BencodeVariable ben)throws IOException {
-        out.write(ben.encode());
+        out.write(ben.toBencode());
     }
 
     public void flush()throws IOException {

@@ -6,13 +6,11 @@ public abstract class BencodeVariable {
 
     public abstract Object getObject();
 
-    public abstract int byteSize();
+    public abstract byte[] toBencode();
 
-    public abstract byte[] encode();
-
-    public void decode(byte[] buf){
-        decode(buf, 0);
+    public void fromBencode(byte[] buf){
+        fromBencode(buf, 0);
     }
 
-    public abstract void decode(byte[] buf, int off);
+    public abstract void fromBencode(byte[] buf, int off);
 }

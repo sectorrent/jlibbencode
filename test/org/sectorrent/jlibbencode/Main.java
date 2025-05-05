@@ -1,6 +1,8 @@
 package org.sectorrent.jlibbencode;
 
 import org.sectorrent.jlibbencode.variables.BencodeArray;
+import org.sectorrent.jlibbencode.variables.BencodeBytes;
+import org.sectorrent.jlibbencode.variables.BencodeNumber;
 import org.sectorrent.jlibbencode.variables.BencodeObject;
 
 import java.io.IOException;
@@ -8,6 +10,14 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args)throws IOException {
+        BencodeNumber n = new BencodeNumber(100.3);
+        System.out.println(new String(n.toBencode()));
+
+
+
+        BencodeBytes s = new BencodeBytes("asdawdawd");
+        System.out.println(new String(s.toBencode()));
+        /*
         BencodeObject o = new BencodeObject();
         o.put("b", "bar");
         o.put("c", "far");
@@ -29,5 +39,6 @@ public class Main {
 
         o = new BencodeObject(buf);
         System.out.println(o);
+        */
     }
 }

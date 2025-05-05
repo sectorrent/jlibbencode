@@ -45,16 +45,15 @@ public class BencodeObject extends BencodeVariable {
 
     public BencodeObject(byte[] buf){
         this();
-        decode(buf);
+        fromBencode(buf);
     }
 
     public BencodeObject(byte[] buf, int off){
         this();
-        decode(buf, off);
+        fromBencode(buf, off);
     }
 
     private void put(BencodeBytes k, BencodeVariable v){
-        int s = (m.containsKey(k)) ? v.byteSize()-m.get(k).byteSize() : k.byteSize()+v.byteSize();
         m.put(k, v);
     }
 
@@ -216,18 +215,8 @@ public class BencodeObject extends BencodeVariable {
     }
 
     @Override
-    public int byteSize(){
-        int s = 2;
-
-        for(BencodeBytes k : m.keySet()){
-            s += k.byteSize()+m.get(k).byteSize();
-        }
-
-        return s;
-    }
-
-    @Override
-    public byte[] encode(){
+    public byte[] toBencode(){
+        /*
         byte[] buf = new byte[byteSize()];
 
         buf[0] = (byte) BencodeType.OBJECT.getPrefix();
@@ -243,13 +232,14 @@ public class BencodeObject extends BencodeVariable {
             pos += value.length;
         }
 
-        buf[pos] = (byte) BencodeType.OBJECT.getSuffix();
+        buf[pos] = (byte) BencodeType.OBJECT.getSuffix();*/
 
-        return buf;
+        return null;
     }
 
     @Override
-    public void decode(byte[] buf, int off){
+    public void fromBencode(byte[] buf, int off){
+        /*
         if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.OBJECT)){
             throw new IllegalArgumentException("Byte array is not a bencode object.");
         }
@@ -265,12 +255,12 @@ public class BencodeObject extends BencodeVariable {
             off += value.byteSize();
 
             m.put(key, value);
-        }
+        }*/
     }
 
     @Override
     public int hashCode(){
-        return 3;
+        return m.hashCode();
     }
 
     @Override

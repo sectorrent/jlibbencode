@@ -9,16 +9,13 @@ import java.util.Arrays;
 
 public class BencodeNumber extends BencodeVariable {
 
-    private Number n;
-    private int s;
+    private byte[] b;
 
     public BencodeNumber(){
     }
 
     public BencodeNumber(Number n){
-        this.n = n;
-
-        s = 2+n.toString().getBytes().length;
+        b = n.toString().getBytes();
     }
 
     @Override
@@ -28,27 +25,26 @@ public class BencodeNumber extends BencodeVariable {
 
     @Override
     public Number getObject(){
-        return n;
+        try{
+            return NumberFormat.getInstance().parse(new String(b));
+        }catch(ParseException e){
+            throw new IllegalStateException("Object was not initialized");
+        }
     }
 
     @Override
-    public int byteSize(){
-        return s;
+    public byte[] toBencode(){
+        byte[] r = new byte[b.length+2];
+        r[0] = (byte) BencodeType.NUMBER.getPrefix();
+        r[r.length-1] = (byte) BencodeType.NUMBER.getSuffix();
+        System.arraycopy(b, 0, r, 1, b.length);
+
+        return r;
     }
 
     @Override
-    public byte[] encode(){
-        byte[] b = new byte[s];
-        b[0] = (byte) BencodeType.NUMBER.getPrefix();
-        b[s-1] = (byte) BencodeType.NUMBER.getSuffix();
-        byte[] c = n.toString().getBytes();
-        System.arraycopy(c, 0, b, 1, c.length);
-
-        return b;
-    }
-
-    @Override
-    public void decode(byte[] buf, int off){
+    public void fromBencode(byte[] buf, int off){
+        /*
         if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.NUMBER)){
             throw new IllegalArgumentException("Byte array is not a bencode number.");
         }
@@ -69,23 +65,24 @@ public class BencodeNumber extends BencodeVariable {
         }
 
         this.s = off-s+2;
+        */
     }
 
     @Override
     public boolean equals(Object o){
         if(o instanceof BencodeNumber){
-            return Arrays.equals(encode(), ((BencodeNumber) o).encode());
+            return Arrays.equals(toBencode(), ((BencodeNumber) o).toBencode());
         }
         return false;
     }
 
     @Override
     public int hashCode(){
-        return 1;
+        return b.hashCode();
     }
 
     @Override
     public String toString(){
-        return n.toString();
+        return new String(b);
     }
 }

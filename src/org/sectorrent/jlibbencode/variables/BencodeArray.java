@@ -37,12 +37,12 @@ public class BencodeArray extends BencodeVariable {
 
     public BencodeArray(byte[] buf){
         this();
-        decode(buf);
+        fromBencode(buf);
     }
 
     public BencodeArray(byte[] buf, int off){
         this();
-        decode(buf, off);
+        fromBencode(buf, off);
     }
 
     private void add(BencodeVariable v){
@@ -237,18 +237,8 @@ public class BencodeArray extends BencodeVariable {
     }
 
     @Override
-    public int byteSize(){
-        int s = 2;
-
-        for(BencodeVariable v : l){
-            s += v.byteSize();
-        }
-
-        return s;
-    }
-
-    @Override
-    public byte[] encode(){
+    public byte[] toBencode(){
+        /*
         byte[] buf = new byte[byteSize()];
 
         buf[0] = (byte) BencodeType.ARRAY.getPrefix();
@@ -261,12 +251,13 @@ public class BencodeArray extends BencodeVariable {
         }
 
         buf[pos] = (byte) BencodeType.ARRAY.getSuffix();
-
-        return buf;
+        */
+        return null;
     }
 
     @Override
-    public void decode(byte[] buf, int off){
+    public void fromBencode(byte[] buf, int off){
+        /*
         if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.ARRAY)){
             throw new IllegalArgumentException("Byte array is not a bencode array.");
         }
@@ -278,11 +269,12 @@ public class BencodeArray extends BencodeVariable {
             off += var.byteSize();
             l.add(var);
         }
+        */
     }
 
     @Override
     public int hashCode(){
-        return 2;
+        return l.hashCode();
     }
 
     @Override
