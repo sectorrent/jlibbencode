@@ -31,6 +31,6 @@ public class TestCases {
         BencodeBytes b = new BencodeBytes();
         b.fromBencode(a.toBencode());
 
-        //assert a.equals(b);
+        assert a.equals(b);
     }
 }
