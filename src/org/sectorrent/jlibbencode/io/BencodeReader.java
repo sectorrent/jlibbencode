@@ -30,7 +30,7 @@ public class BencodeReader {
     }
 
     private BencodeVariable get(byte b)throws IOException {
-        switch(BencodeType.getTypeByPrefix((char) b)){
+        switch(BencodeType.fromCode(b)){
             case NUMBER:
                 return getNumber();
 

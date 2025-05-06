@@ -43,9 +43,9 @@ public class BencodeNumber extends BencodeVariable {
 
     @Override
     public int fromBencode(byte[] buf, int off){
-        //if(!BencodeType.getTypeByPrefix((char) buf[0]).equals(BencodeType.NUMBER)){
-        //    throw new IllegalArgumentException("Byte array is not a bencode number.");
-        //}
+        if(!BencodeType.fromCode(buf[off]).equals(BencodeType.NUMBER)){
+            throw new IllegalArgumentException("Byte array is not a bencode number.");
+        }
 
         int s = 0;
         while(buf[off+s+1] != BencodeType.NUMBER.getSuffix()){

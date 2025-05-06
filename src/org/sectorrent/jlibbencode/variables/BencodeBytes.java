@@ -56,9 +56,9 @@ public class BencodeBytes extends BencodeVariable {
 
     @Override
     public int fromBencode(byte[] buf, int off){
-        //if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.BYTES)){
-        //    throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
-        //}
+        if(!BencodeType.fromCode(buf[off]).equals(BencodeType.BYTES)){
+            throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
+        }
 
         int s = 0;
         while(buf[off+s] != BencodeType.BYTES.getDelimiter()){

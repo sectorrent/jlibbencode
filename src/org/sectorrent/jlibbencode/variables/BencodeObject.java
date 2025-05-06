@@ -237,9 +237,9 @@ public class BencodeObject extends BencodeVariable {
 
     @Override
     protected int fromBencode(byte[] buf, int off){
-        //if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.ARRAY)){
-        //    throw new IllegalArgumentException("Byte array is not a bencode array.");
-        //}
+        if(!BencodeType.fromCode(buf[off]).equals(BencodeType.OBJECT)){
+            throw new IllegalArgumentException("Byte array is not a bencode object.");
+        }
 
         off++;
 
@@ -248,7 +248,7 @@ public class BencodeObject extends BencodeVariable {
             off += key.fromBencode(buf, off);
 
             BencodeVariable value;
-            switch(BencodeType.getTypeByPrefix((char) buf[off])){
+            switch(BencodeType.fromCode(buf[off])){
                 case NUMBER:
                     value = new BencodeNumber();
                     break;
