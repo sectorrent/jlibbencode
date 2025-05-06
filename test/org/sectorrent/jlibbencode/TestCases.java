@@ -1,6 +1,7 @@
 package org.sectorrent.jlibbencode;
 
 import org.junit.Test;
+import org.sectorrent.jlibbencode.variables.BencodeArray;
 import org.sectorrent.jlibbencode.variables.BencodeBytes;
 import org.sectorrent.jlibbencode.variables.BencodeNumber;
 import org.sectorrent.jlibbencode.variables.BencodeObject;
@@ -18,6 +19,11 @@ public class TestCases {
 
     @Test
     public void array(){
+        BencodeArray a = new BencodeArray();
+        a.add("HELLO WORLD");
+        a.add(100.2);
+
+        System.out.println(new String(a.toBencode()));
 
     }
 

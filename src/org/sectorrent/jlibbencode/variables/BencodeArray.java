@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.sectorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
+import static org.sectorrent.jlibbencode.utils.ByteUtils.ensureCapacity;
 
 public class BencodeArray extends BencodeVariable {
 
@@ -233,21 +234,24 @@ public class BencodeArray extends BencodeVariable {
 
     @Override
     public byte[] toBencode(){
-        /*
-        byte[] buf = new byte[byteSize()];
+        byte[] r = new byte[128];
+        r[0] = BencodeType.ARRAY.getPrefix();
 
-        buf[0] = (byte) BencodeType.ARRAY.getPrefix();
-        int pos = 1;
-
+        int off = 1;
         for(BencodeVariable v : l){
-            byte[] key = v.encode();
-            System.arraycopy(key, 0, buf, pos, key.length);
-            pos += key.length;
+            byte[] value = v.toBencode();
+            r = ensureCapacity(r, off+value.length);
+            System.arraycopy(value, 0, r, off, value.length);
+            off += value.length;
         }
 
-        buf[pos] = (byte) BencodeType.ARRAY.getSuffix();
-        */
-        return null;
+        r = ensureCapacity(r, off);
+        r[off] = BencodeType.ARRAY.getSuffix();
+        off++;
+
+        byte[] result = new byte[off];
+        System.arraycopy(r, 0, result, 0, off);
+        return result;
     }
 
     @Override
