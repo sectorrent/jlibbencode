@@ -5,7 +5,7 @@ import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.util.*;
 
-import static org.sectorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
+import static org.sectorrent.jlibbencode.utils.ByteUtils.ensureCapacity;
 
 public class BencodeObject extends BencodeVariable {
 
@@ -211,25 +211,29 @@ public class BencodeObject extends BencodeVariable {
 
     @Override
     public byte[] toBencode(){
-        /*
-        byte[] buf = new byte[byteSize()];
+        byte[] r = new byte[128];
+        r[0] = BencodeType.OBJECT.getPrefix();
 
-        buf[0] = (byte) BencodeType.OBJECT.getPrefix();
-        int pos = 1;
-
+        int off = 1;
         for(BencodeBytes k : m.keySet()){
-            byte[] key = k.encode();
-            System.arraycopy(key, 0, buf, pos, key.length);
-            pos += key.length;
+            byte[] key = k.toBencode();
+            r = ensureCapacity(r, off+key.length);
+            System.arraycopy(key, 0, r, off, key.length);
+            off += key.length;
 
-            byte[] value = m.get(k).encode();
-            System.arraycopy(value, 0, buf, pos, value.length);
-            pos += value.length;
+            byte[] value = m.get(k).toBencode();
+            r = ensureCapacity(r, off+key.length);
+            System.arraycopy(value, 0, r, off, value.length);
+            off += value.length;
         }
 
-        buf[pos] = (byte) BencodeType.OBJECT.getSuffix();*/
+        r = ensureCapacity(r, off);
+        r[off] = BencodeType.OBJECT.getSuffix();
+        off++;
 
-        return null;
+        byte[] result = new byte[off];
+        System.arraycopy(r, 0, result, 0, off);
+        return result;
     }
 
     @Override
@@ -270,9 +274,6 @@ public class BencodeObject extends BencodeVariable {
                     break;
 
                 case ARRAY:
-                    b.append("\t\033[0;32m"+o+"\033[0m: "+m.get(o).toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
-                    break;
-
                 case OBJECT:
                     b.append("\t\033[0;32m"+o+"\033[0m: "+m.get(o).toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
                     break;

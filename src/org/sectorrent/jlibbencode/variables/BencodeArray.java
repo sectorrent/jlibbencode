@@ -284,9 +284,6 @@ public class BencodeArray extends BencodeVariable {
                     break;
 
                 case ARRAY:
-                    b.append("\t\033[0m"+v.toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
-                    break;
-
                 case OBJECT:
                     b.append("\t\033[0m"+v.toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
                     break;

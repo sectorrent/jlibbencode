@@ -7,11 +7,11 @@ public enum BencodeType {
             return c == getPrefix();
         }
 
-        public char getPrefix(){
+        public byte getPrefix(){
             return 'i';
         }
 
-        public char getSuffix(){
+        public byte getSuffix(){
             return 'e';
         }
     },
@@ -20,11 +20,11 @@ public enum BencodeType {
             return c == getPrefix();
         }
 
-        public char getPrefix(){
+        public byte getPrefix(){
             return 'd';
         }
 
-        public char getSuffix(){
+        public byte getSuffix(){
             return 'e';
         }
     },
@@ -33,11 +33,11 @@ public enum BencodeType {
             return c == getPrefix();
         }
 
-        public char getPrefix(){
+        public byte getPrefix(){
             return 'l';
         }
 
-        public char getSuffix(){
+        public byte getSuffix(){
             return 'e';
         }
     },
@@ -46,7 +46,7 @@ public enum BencodeType {
             return (c >= '0' && c <= '9');
         }
 
-        public char getDelimiter(){
+        public byte getDelimiter(){
             return ':';
         }
     }, INVALID;
@@ -55,15 +55,15 @@ public enum BencodeType {
         return false;
     }
 
-    public char getPrefix(){
+    public byte getPrefix(){
         return 0x00;
     }
 
-    public char getSuffix(){
+    public byte getSuffix(){
         return 0x00;
     }
 
-    public char getDelimiter(){
+    public byte getDelimiter(){
         return 0x00;
     }
 
