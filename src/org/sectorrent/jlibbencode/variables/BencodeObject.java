@@ -241,14 +241,13 @@ public class BencodeObject extends BencodeVariable {
             throw new IllegalArgumentException("Byte array is not a bencode object.");
         }
 
-        off++;
-
-        while(buf[off] != BencodeType.OBJECT.getSuffix()){
+        int s = 1;
+        while(buf[off+s] != BencodeType.OBJECT.getSuffix()){
             BencodeBytes key = new BencodeBytes();
-            off += key.fromBencode(buf, off);
+            s += key.fromBencode(buf, off+s);
 
             BencodeVariable value;
-            switch(BencodeType.fromCode(buf[off])){
+            switch(BencodeType.fromCode(buf[off+s])){
                 case NUMBER:
                     value = new BencodeNumber();
                     break;
@@ -269,12 +268,11 @@ public class BencodeObject extends BencodeVariable {
                     throw new IllegalArgumentException("Invalid key type.");
             }
 
-            off += value.fromBencode(buf, off);
-
+            s += value.fromBencode(buf, off+s);
             m.put(key, value);
         }
 
-        return off+1;
+        return s+1;
     }
 
     @Override

@@ -67,13 +67,17 @@ public enum BencodeType {
         switch(c){
             case 'l':
                 return BencodeType.ARRAY;
+
             case 'd':
                 return BencodeType.OBJECT;
+
             case 'i':
                 return BencodeType.NUMBER;
+
             default:
                 if(c >= '0' && c <= '9'){
                     return BencodeType.BYTES;
+
                 }else{
                     throw new IllegalArgumentException("Unknown Bencode prefix: "+(char) c);
                 }
