@@ -1,6 +1,6 @@
 package org.sectorrent.jlibbencode.io;
 
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.BencodeVariable;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,7 +14,7 @@ public class BencodeWriter {
     }
 
     public void write(BencodeVariable ben)throws IOException {
-        out.write(ben.encode());
+        out.write(ben.toBencode());
     }
 
     public void flush()throws IOException {

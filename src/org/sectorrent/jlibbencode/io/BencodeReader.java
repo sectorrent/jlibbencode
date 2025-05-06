@@ -2,7 +2,7 @@ package org.sectorrent.jlibbencode.io;
 
 import org.sectorrent.jlibbencode.variables.*;
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.BencodeVariable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class BencodeReader {
     }
 
     private BencodeVariable get(byte b)throws IOException {
-        switch(BencodeType.getTypeByPrefix((char) b)){
+        switch(BencodeType.fromCode(b)){
             case NUMBER:
                 return getNumber();
 

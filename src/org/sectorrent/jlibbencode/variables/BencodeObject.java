@@ -1,11 +1,10 @@
 package org.sectorrent.jlibbencode.variables;
 
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.util.*;
 
-import static org.sectorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
+import static org.sectorrent.jlibbencode.utils.ByteUtils.ensureCapacity;
 
 public class BencodeObject extends BencodeVariable {
 
@@ -45,16 +44,10 @@ public class BencodeObject extends BencodeVariable {
 
     public BencodeObject(byte[] buf){
         this();
-        decode(buf);
-    }
-
-    public BencodeObject(byte[] buf, int off){
-        this();
-        decode(buf, off);
+        fromBencode(buf);
     }
 
     private void put(BencodeBytes k, BencodeVariable v){
-        int s = (m.containsKey(k)) ? v.byteSize()-m.get(k).byteSize() : k.byteSize()+v.byteSize();
         m.put(k, v);
     }
 
@@ -216,61 +209,83 @@ public class BencodeObject extends BencodeVariable {
     }
 
     @Override
-    public int byteSize(){
-        int s = 2;
+    public byte[] toBencode(){
+        byte[] r = new byte[128];
+        r[0] = BencodeType.OBJECT.getPrefix();
 
+        int off = 1;
         for(BencodeBytes k : m.keySet()){
-            s += k.byteSize()+m.get(k).byteSize();
+            byte[] key = k.toBencode();
+            r = ensureCapacity(r, off+key.length);
+            System.arraycopy(key, 0, r, off, key.length);
+            off += key.length;
+
+            byte[] value = m.get(k).toBencode();
+            r = ensureCapacity(r, off+key.length);
+            System.arraycopy(value, 0, r, off, value.length);
+            off += value.length;
         }
 
-        return s;
+        r = ensureCapacity(r, off);
+        r[off] = BencodeType.OBJECT.getSuffix();
+        off++;
+
+        byte[] result = new byte[off];
+        System.arraycopy(r, 0, result, 0, off);
+        return result;
     }
 
     @Override
-    public byte[] encode(){
-        byte[] buf = new byte[byteSize()];
-
-        buf[0] = (byte) BencodeType.OBJECT.getPrefix();
-        int pos = 1;
-
-        for(BencodeBytes k : m.keySet()){
-            byte[] key = k.encode();
-            System.arraycopy(key, 0, buf, pos, key.length);
-            pos += key.length;
-
-            byte[] value = m.get(k).encode();
-            System.arraycopy(value, 0, buf, pos, value.length);
-            pos += value.length;
-        }
-
-        buf[pos] = (byte) BencodeType.OBJECT.getSuffix();
-
-        return buf;
-    }
-
-    @Override
-    public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.OBJECT)){
+    protected int fromBencode(byte[] buf, int off){
+        if(!BencodeType.fromCode(buf[off]).equals(BencodeType.OBJECT)){
             throw new IllegalArgumentException("Byte array is not a bencode object.");
         }
 
-        off++;
-
-        while(buf[off] != BencodeType.OBJECT.getSuffix()){
+        int s = 1;
+        while(buf[off+s] != BencodeType.OBJECT.getSuffix()){
             BencodeBytes key = new BencodeBytes();
-            key.decode(buf, off);
-            off += key.byteSize();
+            s += key.fromBencode(buf, off+s);
 
-            BencodeVariable value = unpackBencode(buf, off);
-            off += value.byteSize();
+            BencodeVariable value;
+            switch(BencodeType.fromCode(buf[off+s])){
+                case NUMBER:
+                    value = new BencodeNumber();
+                    break;
 
+                case ARRAY:
+                    value = new BencodeArray();
+                    break;
+
+                case OBJECT:
+                    value = new BencodeObject();
+                    break;
+
+                case BYTES:
+                    value = new BencodeBytes();
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid key type.");
+            }
+
+            s += value.fromBencode(buf, off+s);
             m.put(key, value);
         }
+
+        return s+1;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof BencodeObject){
+            return Objects.equals(m, ((BencodeObject) o).m);
+        }
+        return false;
     }
 
     @Override
     public int hashCode(){
-        return 3;
+        return Objects.hash(m);
     }
 
     @Override
@@ -284,9 +299,6 @@ public class BencodeObject extends BencodeVariable {
                     break;
 
                 case ARRAY:
-                    b.append("\t\033[0;32m"+o+"\033[0m: "+m.get(o).toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
-                    break;
-
                 case OBJECT:
                     b.append("\t\033[0;32m"+o+"\033[0m: "+m.get(o).toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
                     break;

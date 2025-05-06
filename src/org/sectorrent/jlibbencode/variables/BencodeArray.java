@@ -1,13 +1,12 @@
 package org.sectorrent.jlibbencode.variables;
 
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.sectorrent.jlibbencode.utils.BencodeUtils.unpackBencode;
+import static org.sectorrent.jlibbencode.utils.ByteUtils.ensureCapacity;
 
 public class BencodeArray extends BencodeVariable {
 
@@ -37,12 +36,7 @@ public class BencodeArray extends BencodeVariable {
 
     public BencodeArray(byte[] buf){
         this();
-        decode(buf);
-    }
-
-    public BencodeArray(byte[] buf, int off){
-        this();
-        decode(buf, off);
+        fromBencode(buf);
     }
 
     private void add(BencodeVariable v){
@@ -237,52 +231,75 @@ public class BencodeArray extends BencodeVariable {
     }
 
     @Override
-    public int byteSize(){
-        int s = 2;
+    public byte[] toBencode(){
+        byte[] r = new byte[128];
+        r[0] = BencodeType.ARRAY.getPrefix();
 
+        int off = 1;
         for(BencodeVariable v : l){
-            s += v.byteSize();
+            byte[] value = v.toBencode();
+            r = ensureCapacity(r, off+value.length);
+            System.arraycopy(value, 0, r, off, value.length);
+            off += value.length;
         }
 
-        return s;
+        r = ensureCapacity(r, off);
+        r[off] = BencodeType.ARRAY.getSuffix();
+        off++;
+
+        byte[] result = new byte[off];
+        System.arraycopy(r, 0, result, 0, off);
+        return result;
     }
 
     @Override
-    public byte[] encode(){
-        byte[] buf = new byte[byteSize()];
-
-        buf[0] = (byte) BencodeType.ARRAY.getPrefix();
-        int pos = 1;
-
-        for(BencodeVariable v : l){
-            byte[] key = v.encode();
-            System.arraycopy(key, 0, buf, pos, key.length);
-            pos += key.length;
-        }
-
-        buf[pos] = (byte) BencodeType.ARRAY.getSuffix();
-
-        return buf;
-    }
-
-    @Override
-    public void decode(byte[] buf, int off){
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.ARRAY)){
+    public int fromBencode(byte[] buf, int off){
+        if(!BencodeType.fromCode(buf[off]).equals(BencodeType.ARRAY)){
             throw new IllegalArgumentException("Byte array is not a bencode array.");
         }
 
-        off++;
+        int s = 1;
+        while(buf[off+s] != BencodeType.ARRAY.getSuffix()){
+            BencodeVariable value;
+            switch(BencodeType.fromCode(buf[off+s])){
+                case NUMBER:
+                    value = new BencodeNumber();
+                    break;
 
-        while(buf[off] != BencodeType.ARRAY.getSuffix()){
-            BencodeVariable var = unpackBencode(buf, off);
-            off += var.byteSize();
-            l.add(var);
+                case ARRAY:
+                    value = new BencodeArray();
+                    break;
+
+                case OBJECT:
+                    value = new BencodeObject();
+                    break;
+
+                case BYTES:
+                    value = new BencodeBytes();
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid key type.");
+            }
+
+            s += value.fromBencode(buf, off+s);
+            l.add(value);
         }
+
+        return s+1;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof BencodeArray){
+            return l.equals(((BencodeArray) o).l);
+        }
+        return false;
     }
 
     @Override
     public int hashCode(){
-        return 2;
+        return l.hashCode();
     }
 
     @Override
@@ -296,9 +313,6 @@ public class BencodeArray extends BencodeVariable {
                     break;
 
                 case ARRAY:
-                    b.append("\t\033[0m"+v.toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
-                    break;
-
                 case OBJECT:
                     b.append("\t\033[0m"+v.toString().replaceAll("\\r?\\n", "\r\n\t")+"\r\n");
                     break;
