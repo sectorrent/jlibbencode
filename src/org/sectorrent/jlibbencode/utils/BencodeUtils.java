@@ -5,7 +5,7 @@ import org.sectorrent.jlibbencode.variables.BencodeBytes;
 import org.sectorrent.jlibbencode.variables.BencodeNumber;
 import org.sectorrent.jlibbencode.variables.BencodeObject;
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.BencodeVariable;
 
 public class BencodeUtils {
 

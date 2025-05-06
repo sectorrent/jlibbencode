@@ -1,7 +1,6 @@
 package org.sectorrent.jlibbencode.variables;
 
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -43,20 +42,20 @@ public class BencodeNumber extends BencodeVariable {
     }
 
     @Override
-    public int fromBencode(byte[] buf){
-        if(!BencodeType.getTypeByPrefix((char) buf[0]).equals(BencodeType.NUMBER)){
-            throw new IllegalArgumentException("Byte array is not a bencode number.");
+    public int fromBencode(byte[] buf, int off){
+        //if(!BencodeType.getTypeByPrefix((char) buf[0]).equals(BencodeType.NUMBER)){
+        //    throw new IllegalArgumentException("Byte array is not a bencode number.");
+        //}
+
+        int s = 0;
+        while(buf[off+s+1] != BencodeType.NUMBER.getSuffix()){
+            s++;
         }
 
-        int off = 1;
-        while(buf[off] != BencodeType.NUMBER.getSuffix()){
-            off++;
-        }
+        b = new byte[s];
+        System.arraycopy(buf, off+1, b, 0, b.length);
 
-        b = new byte[off-1];
-        System.arraycopy(buf, 1, b, 0, b.length);
-
-        return off+2;
+        return s+2;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class BencodeNumber extends BencodeVariable {
 
     @Override
     public int hashCode(){
-        return b.hashCode();
+        return Arrays.hashCode(b);
     }
 
     @Override

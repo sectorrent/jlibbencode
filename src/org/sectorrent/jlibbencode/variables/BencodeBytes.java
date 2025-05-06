@@ -1,7 +1,6 @@
 package org.sectorrent.jlibbencode.variables;
 
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -56,47 +55,25 @@ public class BencodeBytes extends BencodeVariable {
     }
 
     @Override
-    public int fromBencode(byte[] buf){
-        if(!BencodeType.getTypeByPrefix((char) buf[0]).equals(BencodeType.BYTES)){
-            throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
-        }
+    public int fromBencode(byte[] buf, int off){
+        //if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.BYTES)){
+        //    throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
+        //}
 
-        int off = 0;
-        while(buf[off] != BencodeType.BYTES.getDelimiter()){
-            off++;
-        }
-
-        int length = 0;
-        for(int i = 0; i < off; i++){
-            length = length*10+(buf[i]-'0');
-        }
-
-        b = new byte[length];
-        System.arraycopy(buf, off+1, b, 0, b.length);
-
-        /*
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.BYTES)){
-            throw new IllegalArgumentException("Byte array is not a bencode bytes / string.");
-        }
-
-        byte[] c = new byte[8];
-        int s = off;
-
-        while(buf[off] != BencodeType.BYTES.getDelimiter()){
-            c[off-s] = buf[off];
-            off++;
+        int s = 0;
+        while(buf[off+s] != BencodeType.BYTES.getDelimiter()){
+            s++;
         }
 
         int length = 0;
-        for(int i = 0; i < off-s; i++){
-            length = length*10+(c[i]-'0');
+        for(int i = 0; i < s; i++){
+            length = length*10+(buf[off+i]-'0');
         }
 
         b = new byte[length];
-        System.arraycopy(buf, off+1, b, 0, b.length);
-        this.s = (off-s)+b.length+1;
-        */
-        return off+length+1;
+        System.arraycopy(buf, off+s+1, b, 0, b.length);
+
+        return s+length+1;
     }
 
     @Override
@@ -109,7 +86,7 @@ public class BencodeBytes extends BencodeVariable {
 
     @Override
     public int hashCode(){
-        return b.hashCode();
+        return Arrays.hashCode(b);
     }
 
     @Override

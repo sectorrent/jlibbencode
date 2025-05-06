@@ -13,8 +13,10 @@ public class TestCases {
         BencodeObject a = new BencodeObject();
         a.put("a", "HELLO WORLD");
         a.put("b", 100.2);
+        BencodeObject b = new BencodeObject();
+        b.fromBencode(a.toBencode());
 
-        System.out.println(new String(a.toBencode()));
+        assert a.equals(b);
     }
 
     @Test
@@ -22,9 +24,10 @@ public class TestCases {
         BencodeArray a = new BencodeArray();
         a.add("HELLO WORLD");
         a.add(100.2);
+        BencodeArray b = new BencodeArray();
+        b.fromBencode(a.toBencode());
 
-        System.out.println(new String(a.toBencode()));
-
+        assert a.equals(b);
     }
 
     @Test

@@ -1,4 +1,6 @@
-package org.sectorrent.jlibbencode.variables.inter;
+package org.sectorrent.jlibbencode.variables;
+
+import org.sectorrent.jlibbencode.variables.inter.BencodeType;
 
 public abstract class BencodeVariable {
 
@@ -7,10 +9,10 @@ public abstract class BencodeVariable {
     public abstract Object getObject();
 
     public abstract byte[] toBencode();
-/*
+
     public void fromBencode(byte[] buf){
-        fromBencode(buf);
+        fromBencode(buf, 0);
     }
-*/
-    public abstract int fromBencode(byte[] buf);
+
+    protected abstract int fromBencode(byte[] buf, int off);
 }

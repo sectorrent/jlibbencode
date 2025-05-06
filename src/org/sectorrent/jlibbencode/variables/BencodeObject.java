@@ -1,7 +1,6 @@
 package org.sectorrent.jlibbencode.variables;
 
 import org.sectorrent.jlibbencode.variables.inter.BencodeType;
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
 
 import java.util.*;
 
@@ -237,30 +236,58 @@ public class BencodeObject extends BencodeVariable {
     }
 
     @Override
-    public int fromBencode(byte[] buf){
-        /*
-        if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.OBJECT)){
-            throw new IllegalArgumentException("Byte array is not a bencode object.");
-        }
+    protected int fromBencode(byte[] buf, int off){
+        //if(!BencodeType.getTypeByPrefix((char) buf[off]).equals(BencodeType.ARRAY)){
+        //    throw new IllegalArgumentException("Byte array is not a bencode array.");
+        //}
 
         off++;
 
         while(buf[off] != BencodeType.OBJECT.getSuffix()){
             BencodeBytes key = new BencodeBytes();
-            key.decode(buf, off);
-            off += key.byteSize();
+            off += key.fromBencode(buf, off);
 
-            BencodeVariable value = unpackBencode(buf, off);
-            off += value.byteSize();
+            BencodeVariable value;
+            switch(BencodeType.getTypeByPrefix((char) buf[off])){
+                case NUMBER:
+                    value = new BencodeNumber();
+                    break;
+
+                case ARRAY:
+                    value = new BencodeArray();
+                    break;
+
+                case OBJECT:
+                    value = new BencodeObject();
+                    break;
+
+                case BYTES:
+                    value = new BencodeBytes();
+                    break;
+
+                default:
+                    throw new IllegalArgumentException("Invalid key type.");
+            }
+
+            off += value.fromBencode(buf, off);
 
             m.put(key, value);
-        }*/
-        return 0;
+        }
+
+        return off+1;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof BencodeObject){
+            return Objects.equals(m, ((BencodeObject) o).m);
+        }
+        return false;
     }
 
     @Override
     public int hashCode(){
-        return m.hashCode();
+        return Objects.hash(m);
     }
 
     @Override

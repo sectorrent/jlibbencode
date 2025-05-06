@@ -1,6 +1,6 @@
 package org.sectorrent.jlibbencode.io;
 
-import org.sectorrent.jlibbencode.variables.inter.BencodeVariable;
+import org.sectorrent.jlibbencode.variables.BencodeVariable;
 
 import java.io.IOException;
 import java.io.OutputStream;
